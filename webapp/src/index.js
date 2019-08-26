@@ -1,9 +1,19 @@
 import {id as pluginId} from './manifest';
 
+import Root from './components/root';
+
+import {openRootModal} from './actions';
+import reducer from './reducer';
+
 export default class Plugin {
-    // eslint-disable-next-line no-unused-vars
     initialize(registry, store) {
-        // @see https://developers.mattermost.com/extend/plugins/webapp/reference/
+        registry.registerRootComponent(Root);
+        registry.registerReducer(reducer);
+
+        registry.registerPostDropdownMenuAction(
+            'Doc Up',
+            (postID) => store.dispatch(openRootModal(postID)),
+        );
     }
 }
 
