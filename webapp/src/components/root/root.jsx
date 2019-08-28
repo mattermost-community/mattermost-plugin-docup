@@ -31,7 +31,7 @@ export default class Root extends React.Component {
             copyToClipboard(this.props.message);
         }
     }
-    loadDocs = async (path = '/') => {
+    loadDocs = async (path = 'site/content') => {
         const result = await github.repos.getContents({owner: 'mattermost', repo: 'mattermost-developer-documentation', path})
         console.log(result.data);
         this.setState({data: result.data, path});
@@ -39,7 +39,7 @@ export default class Root extends React.Component {
     goBack = () => {
         let {path} = this.state;
         path = path.substring(0, path.lastIndexOf('/'));
-        this.loadDocs(path || '/');
+        this.loadDocs(path);
     }
     renderTypeStage = () => {
         return (
@@ -56,7 +56,7 @@ export default class Root extends React.Component {
         const {data, type, path} = this.state;
 
         let backFunc = this.goBack;
-        if (path === '/') {
+        if (path === 'site/content') {
             backFunc = () => this.setState({stage: StageEnum.TYPE});
         }
 
@@ -131,7 +131,7 @@ export default class Root extends React.Component {
                     <span>{message}</span>
                     <br/>
                     <br/>
-                    <button onClick={this.close}>{'Close'}</button>
+                    <button onClick={close}>{'Close'}</button>
                 </div>
             </div>
         );
