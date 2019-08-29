@@ -43,6 +43,21 @@ module.exports = {
                     },
                 },
             },
+            {
+                test: /\.scss$/,
+                use: [
+                    'style-loader',
+                    {
+                        loader: 'css-loader',
+                    },
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            includePaths: ['node_modules/compass-mixins/lib', 'sass'],
+                        },
+                    },
+                ],
+            },
         ],
     },
     externals: {
@@ -51,6 +66,7 @@ module.exports = {
         'react-redux': 'ReactRedux',
         'prop-types': 'PropTypes',
         'react-bootstrap': 'ReactBootstrap',
+        'react-dom': 'ReactDOM',
     },
     output: {
         path: path.join(__dirname, '/dist'),

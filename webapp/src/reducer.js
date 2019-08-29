@@ -13,10 +13,10 @@ const rootModalVisible = (state = false, action) => {
     }
 };
 
-const message = (state = '', action) => {
+const postID = (state = '', action) => {
     switch (action.type) {
     case OPEN_ROOT_MODAL:
-        return action.message;
+        return action.postID;
     case CLOSE_ROOT_MODAL:
         return '';
     default:
@@ -26,6 +26,6 @@ const message = (state = '', action) => {
 
 export default combineReducers({
     rootModalVisible,
-    message,
+    postID,
 });
 

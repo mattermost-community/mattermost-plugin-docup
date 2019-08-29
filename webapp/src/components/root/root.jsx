@@ -1,183 +1,185 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import github from '../../github';
+import {makeStyleFromTheme, changeOpacity} from 'mattermost-redux/utils/theme_utils';
 
-const StageEnum = {
-    TYPE: 0,
-    PICK_FILE: 1,
-}
+import FullScreenModal from '../modals/full_screen_modal.jsx';
+
+import './root.scss';
 
 export default class Root extends React.Component {
     static propTypes = {
         visible: PropTypes.bool.isRequired,
         message: PropTypes.string.isRequired,
+        postID: PropTypes.string.isRequired,
         close: PropTypes.func.isRequired,
+        submit: PropTypes.func.isRequired,
         theme: PropTypes.object.isRequired,
     }
     constructor(props) {
         super(props);
 
         this.state = {
-            stage: StageEnum.TYPE,
-            path: '/',
             type: null,
-            data: null,
+            message: null,
+            title: '',
         };
     }
-    componentDidUpdate(prevProps) {
-        if (this.props.visible && !prevProps.visible) {
-            this.loadDocs();
-            copyToClipboard(this.props.message);
-        }
-    }
-    loadDocs = async (path = 'site/content') => {
-        const result = await github.repos.getContents({owner: 'mattermost', repo: 'mattermost-developer-documentation', path})
-        console.log(result.data);
-        this.setState({data: result.data, path});
-    }
-    goBack = () => {
-        let {path} = this.state;
-        path = path.substring(0, path.lastIndexOf('/'));
-        this.loadDocs(path);
-    }
-    renderTypeStage = () => {
-        return (
-            <React.Fragment>
-                {'What type of documentation is this?'}
-                <br/>
-                <button onClick={() => this.setState({type: 'admin', stage: StageEnum.PICK_FILE})}>{'Admin'}</button>
-                <button onClick={() => this.setState({type: 'developer', stage: StageEnum.PICK_FILE})}>{'Developer'}</button>
-                <button onClick={() => this.setState({type: 'company', stage: StageEnum.PICK_FILE})}>{'Company'}</button>
-            </React.Fragment>
-        );
-    }
-    renderPickFileStage = () => {
-        const {data, type, path} = this.state;
 
-        let backFunc = this.goBack;
-        if (path === 'site/content') {
-            backFunc = () => this.setState({stage: StageEnum.TYPE});
+    static getDerivedStateFromProps(props, state) {
+        if (props.visible && state.message == null) {
+            return {message: props.message};
         }
-
-        return (
-            <React.Fragment>
-                {'Type: ' + type}
-                <br/>
-                {'Path: ' + path}
-                <br/>
-                {'Pick a file to add documentation to.'}
-                <br/>
-                {data.map(this.renderFile)}
-                <br/>
-                <br/>
-                <button onClick={backFunc}>{'Back'}</button>
-            </React.Fragment>
-        );
+        if (!props.visible && state.message != null) {
+            return {message: null, title: ''};
+        }
+        return null;
     }
-    renderFile = (file) => {
-        if (!file || (!file.name.endsWith('.md') && file.size !== 0)) {
-            console.log('skipped ' + file ? file.name : 'null file');
-            return null;
-        }
 
-        if (file.size === 0) {
-            return (
-                <button onClick={() => this.loadDocs(file.path)}>
-                    {file.name}
-                </button>
-            );
-        }
-
-        return (
-            <button onClick={() => window.open('https://github.com/mattermost/mattermost-developer-documentation/edit/master/' + file.path)}>
-                {file.name}
-            </button>
-        );
+    submit = () => {
+        const {submit, close, postID} = this.props;
+        const {type, title, message} = this.state;
+        submit(type, title, message, postID);
+        close();
     }
+
     render() {
-        const {visible, theme, message, close} = this.props;
+        const {visible, theme, close} = this.props;
 
         if (!visible) {
             return null;
         }
 
-        const {data, stage} = this.state;
+        const {message, type, title} = this.state;
     
         const style = getStyle(theme);
 
-        let content;
-        switch (stage) {
-            case StageEnum.TYPE:
-                content = this.renderTypeStage();
-                break;
-            case StageEnum.PICK_FILE:
-                content = this.renderPickFileStage();
-                break;
-            default:
-                content = 'Unknown stage.';
-        }
-    
         return (
-            <div
-                style={style.backdrop}
+            <FullScreenModal
+                show={visible}
+                onClose={close}
             >
-                <div style={style.modal}>
-                    {content}
-                    <br/>
-                    <br/>
-                    {'Message to document (copied to clipboard):'}
-                    <br/>
-                    <span>{message}</span>
-                    <br/>
-                    <br/>
-                    <button onClick={close}>{'Close'}</button>
+                <div
+                    style={style.modal}
+                    className='DocUpRootModal'
+                >
+                    <h1>{'Doc Up'}</h1>
+                    <div className='docup-item'>
+                        <h2>
+                        {'What type of documentation is this?'}
+                        </h2>
+                        <fieldset
+                            key='channelType'
+                            className='multi-select__radio'
+                        >
+                            <div className='radio'>
+                                <label>
+                                    <input
+                                        id='admin'
+                                        type='radio'
+                                        checked={type === 'admin'}
+                                        onChange={() => this.setState({type: 'admin'})}
+                                    />
+                                    {'Admin'}
+                                </label>
+                            </div>
+                            <div className='radio'>
+                                <label>
+                                    <input
+                                        id='developer'
+                                        type='radio'
+                                        checked={type === 'developer'}
+                                        onChange={() => this.setState({type: 'developer'})}
+                                    />
+                                    {'Developer'}
+                                </label>
+                            </div>
+                            <div className='radio'>
+                                <label>
+                                    <input
+                                        id='handbook'
+                                        type='radio'
+                                        checked={type === 'handbook'}
+                                        onChange={() => this.setState({type: 'handbook'})}
+                                    />
+                                    {'Company Handbook'}
+                                </label>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div className='docup-item'>
+                        <h2>
+                            {'Short title'}
+                        </h2>
+                        <input
+                            className='docup-input docup-one-line'
+                            style={style.textarea}
+                            type='text'
+                            value={title}
+                            placeholder='One line summary of what is being documented'
+                            onChange={(e) => this.setState({title: e.target.value})}
+                        />
+                    </div>
+                    <div className='docup-item'>
+                        <h2>
+                            {'Message to document'}
+                        </h2>
+                        <textarea
+                            className='docup-input'
+                            style={style.textarea}
+                            value={message}
+                            onChange={(e) => this.setState({message: e.target.value})}
+                        />
+                    </div>
+                    <div className='docup-button-container'>
+                        <button
+                            className={'btn btn-primary'}
+                            style={!type || !title ? style.inactiveButton : style.button}
+                            onClick={this.submit}
+                            disabled={!type || !title}
+                        >
+                            {'Mark for Documentation'}
+                        </button>
+                    </div>
+                    <div className='docup-divider'/>
+                    <div className='docup-clarification'>
+                        <div className='docup-question'>
+                            {'What does this do?'}
+                        </div>
+                        <div className='docup-answer'>
+                            {'Marking something for documentation, otherwise known as doc\'ing up, will create a GitHub issue in the corresponding repository for the documentation type that is selected. This GitHub issue can then be picked up by someone to edit and submit a pull request to update our official documentation.'}
+                        </div>
+                        <div className='docup-question'>
+                            {'Why create an issue instead of directly creating a pull request?'}
+                        </div>
+                        <div className='docup-answer'>
+                            {'Creating a pull request requires intricate knowledge of our documentation repositories, making it difficult for someone not familiar to know exactly where to place the documentation. Creating an issue gives our writers and editors a list of items needing documenation while at the same time making a raw form of the documentation, in the GitHub issue, immediately searchable on the web.'}
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </FullScreenModal>
         );
     }
 }
 
-const getStyle = (theme) => ({
-    backdrop: {
-        position: 'absolute',
-        display: 'flex',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.50)',
-        zIndex: 2000,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    modal: {
-        height: '500px',
-        width: '800px',
-        padding: '1em',
-        color: theme.centerChannelColor,
-        backgroundColor: theme.centerChannelBg,
-    },
+const getStyle = makeStyleFromTheme((theme) => {
+    return {
+        modal: {
+            color: changeOpacity(theme.centerChannelColor, 0.9),
+        },
+        textarea: {
+            backgroundColor: theme.centerChannelBg,
+        },
+        helpText: {
+            color: changeOpacity(theme.centerChannelColor, 0.6),
+        },
+        button: {
+            color: theme.buttonColor,
+            backgroundColor: theme.buttonBg,
+        },
+        inactiveButton: {
+            color: changeOpacity(theme.buttonColor, 0.5),
+            backgroundColor: changeOpacity(theme.buttonBg, 0.1),
+        },
+    };
 });
-
-function copyToClipboard(data) {
-    // creates a tiny temporary text area to copy text out of
-    // see https://stackoverflow.com/a/30810322/591374 for details
-    const textArea = document.createElement('textarea');
-    textArea.style.position = 'fixed';
-    textArea.style.top = 0;
-    textArea.style.left = 0;
-    textArea.style.width = '2em';
-    textArea.style.height = '2em';
-    textArea.style.padding = 0;
-    textArea.style.border = 'none';
-    textArea.style.outline = 'none';
-    textArea.style.boxShadow = 'none';
-    textArea.style.background = 'transparent';
-    textArea.value = data;
-    document.body.appendChild(textArea);
-    textArea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textArea);
-}
-

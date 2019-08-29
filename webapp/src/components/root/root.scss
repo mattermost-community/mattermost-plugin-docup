@@ -1,0 +1,100 @@
+.DocUpRootModal {
+    display: flex;
+    flex-direction: column;
+    padding-top: 60px;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    font-size: 16px;
+    @media (max-width: 768px) {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    h1 {
+        font-size: 32px;
+        margin-bottom: 40px;
+        margin-top: 16px;
+        text-align: center;
+        font-weight: 300;
+        line-height: 1;
+        strong {
+            font-weight: 400;
+        }
+    }
+    h2 {
+        font-weight: 300;
+        strong {
+            font-weight: 400;
+        }
+    }
+    
+    .docup-modal-icon {
+        text-align: center;
+        svg {
+            height: 32px;
+            width: 126px;
+            margin-right: 85px;
+        }
+    }
+
+    .docup-item {
+        max-width: 720px;
+        width: 100%;
+        margin-bottom: 28px;
+        .docup-input {
+            height: 144px;
+            border: 1px solid rgba(0, 0, 0, .3);
+            border-radius: 4px;
+            padding: 12px 14px;
+            width: 100%;
+            font-size: 14px;
+            resize: none;
+            overflow: auto;
+            &.docup-one-line {
+                height: 48px;
+            }
+        }
+        .docup-help-text {
+            margin-top: 8px;
+        }
+    }
+
+    .docup-button-container {
+        margin-bottom: 28px;
+        button {
+            padding: 13px 26px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 4px;
+            &:focus, &:active, &:focus:active {
+                outline: none;
+                border-color: transparent;
+            }
+        }
+    }
+
+    .docup-divider {
+        border-bottom: 1px solid rgba(0, 0, 0, .3);
+        height: 1px;
+        width: 65%;
+        margin-top: 28px;
+        margin-bottom: 28px;
+    }
+
+    .docup-clarification {
+        max-width: 720px;
+        width: 100%;
+        margin-bottom: 28px;
+        .docup-question {
+            font-weight: 300;
+            font-size: 14px;
+            width: 100%
+        }
+        .docup-answer {
+            font-size: 12px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+    }
+}

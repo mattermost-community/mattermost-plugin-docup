@@ -3,10 +3,10 @@ import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {id as pluginId} from './manifest';
 import {OPEN_ROOT_MODAL, CLOSE_ROOT_MODAL} from './action_types';
 
-export const openRootModal = (message) => (dispatch) => {
+export const openRootModal = (postID) => (dispatch) => {
     dispatch({
         type: OPEN_ROOT_MODAL,
-        message,
+        postID,
     });
 };
 
@@ -30,4 +30,16 @@ export const getPluginServerRoute = (state) => {
     }
 
     return basePath + '/plugins/' + pluginId;
+};
+
+export const create = (type, title, body, postID) => async (dispatch, getState) => {
+    fetch(getPluginServerRoute(getState()) + '/create', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({type, title, body, post_id: postID}),
+    });
 };

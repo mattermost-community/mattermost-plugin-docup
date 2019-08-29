@@ -1,15 +1,57 @@
 {
     "id": "com.mattermost.docup",
     "name": "Doc Up",
-    "description": "This plugin makes it easy to document messages from Mattermost. Otherwise known as doc'ing up.",
+    "description": "This plugin makes it easy to mark messages in Mattermost for documentation. Known as doc'ing up.",
     "version": "0.1.0",
     "min_server_version": "5.12.0",
+    "server": {
+        "executables": {
+            "linux-amd64": "server/dist/plugin-linux-amd64",
+            "darwin-amd64": "server/dist/plugin-darwin-amd64",
+            "windows-amd64": "server/dist/plugin-windows-amd64.exe"
+        }
+    },
     "webapp": {
         "bundle_path": "webapp/dist/main.js"
     },
     "settings_schema": {
         "header": "",
         "footer": "",
-        "settings": []
+        "settings": [
+            {
+                "key": "GitHubAPIKey",
+                "display_name": "GitHub API Key",
+                "type": "text",
+                "help_text": "GitHub API Key used to create issues in repositories."
+            },
+            {
+                "key": "AdminRepository",
+                "display_name": "Admin Repository",
+                "type": "text",
+                "placeholder": "owner/repo",
+                "help_text": "Repository for admin documentation."
+            },
+            {
+                "key": "DeveloperRepository",
+                "display_name": "Developer Repository",
+                "type": "text",
+                "placeholder": "owner/repo",
+                "help_text": "Repository for developer documentation."
+            },
+            {
+                "key": "HandbookRepository",
+                "display_name": "Handbook Repository",
+                "type": "text",
+                "placeholder": "owner/repo",
+                "help_text": "Repository for company handbook documentation."
+            },
+            {
+                "key": "Labels",
+                "display_name": "Labels to Add",
+                "type": "text",
+                "placeholder": "label1,label2",
+                "help_text": "Comma separated list of labels to add to issues when they are created."
+            }
+        ]
     }
 }
