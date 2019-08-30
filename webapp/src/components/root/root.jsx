@@ -31,7 +31,7 @@ export default class Root extends React.Component {
             return {message: props.message};
         }
         if (!props.visible && state.message != null) {
-            return {message: null, title: ''};
+            return {message: null, title: '', type: null};
         }
         return null;
     }
@@ -51,7 +51,7 @@ export default class Root extends React.Component {
         }
 
         const {message, type, title} = this.state;
-    
+
         const style = getStyle(theme);
 
         return (
@@ -66,7 +66,7 @@ export default class Root extends React.Component {
                     <h1>{'Doc Up'}</h1>
                     <div className='docup-item'>
                         <h2>
-                        {'What type of documentation is this?'}
+                            {'What type of documentation is this?'}
                         </h2>
                         <fieldset
                             key='channelType'
