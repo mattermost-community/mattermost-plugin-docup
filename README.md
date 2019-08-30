@@ -1,8 +1,19 @@
 # Doc Up
-
 This plugin makes it easy to mark messages in Mattermost for documentation. Known as doc'ing up. It is meant to work with documentation that lives in GitHub.
 
 The plugin is in alpha.
+
+## Install
+Simply upload the plugin bundle to your Mattermost and configure the fields on the settings page.
+
+## Usage
+Click 'Doc Up' in a post dropdown menu:
+
+![image](https://user-images.githubusercontent.com/2672098/64022415-24d8b380-cb04-11e9-9477-194da777411c.png)
+
+Fill out the fields and click 'Mark for Documentation':
+
+![image](https://user-images.githubusercontent.com/2672098/64022419-26a27700-cb04-11e9-8f08-73b63f85b39f.png)
 
 ## FAQ
 
