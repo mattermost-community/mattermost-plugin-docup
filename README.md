@@ -15,6 +15,10 @@ Fill out the fields and click 'Mark for Documentation':
 
 ![image](https://user-images.githubusercontent.com/2672098/64022419-26a27700-cb04-11e9-8f08-73b63f85b39f.png)
 
+A post is created linking to the new GitHub issue:
+
+![image](https://user-images.githubusercontent.com/2672098/64022731-d677e480-cb04-11e9-9daf-6633fdfcb055.png)
+
 ## FAQ
 
 #### What does this do?
