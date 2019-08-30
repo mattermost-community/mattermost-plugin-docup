@@ -6,6 +6,8 @@ The plugin is in alpha.
 ## Install
 Simply upload the plugin bundle to your Mattermost and configure the fields on the settings page.
 
+You will need to a GitHub Personal Access Token that has write permissions to the repositories you configure in the settings.
+
 ## Usage
 Click 'Doc Up' in a post dropdown menu:
 
