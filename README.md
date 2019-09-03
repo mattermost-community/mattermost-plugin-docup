@@ -27,7 +27,7 @@ A post is created linking to the new GitHub issue:
 
 ![image](https://user-images.githubusercontent.com/2672098/64022731-d677e480-cb04-11e9-9daf-6633fdfcb055.png)
 
-A GitHub issue is created in the appropriate Repo:
+A GitHub issue is created in the appropriate repo:
 
 ![image](https://user-images.githubusercontent.com/915956/64045095-527e2680-cb1d-11e9-9cd4-9fc3c3d3e745.png) 
 
