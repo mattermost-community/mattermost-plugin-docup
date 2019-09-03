@@ -34,9 +34,9 @@ A GitHub issue is created in the appropriate repo:
 ## Configuration Options
 
 In the plugin settings area, you can configure the repos for:
-- Mattermost Admin Repository
-- Mattermost Developer Docs Repository
-- Mattermost Handbook Repository
+- Admin Repository
+- Developer Docs Repository
+- Handbook Repository
 
 You can also specify which Labels are applied to each newly created DocUp issues in GitHub.
 
