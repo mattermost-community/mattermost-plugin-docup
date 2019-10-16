@@ -1,6 +1,8 @@
 # Doc Up
 This plugin makes it easy to mark messages in Mattermost for further documentation so we can try to keep improving our shared knowledge. Known as doc'ing up. It is meant to work with documentation that lives in GitHub.
 
+![image](https://user-images.githubusercontent.com/177788/66929458-e92c7700-efe7-11e9-82a8-b5ada18d6fb3.png)
+
 #### What does this do?
 Marking something for documentation, otherwise known as doc'ing up, will create a GitHub issue with the title `Request for Documentation: <Short_Title>` in the corresponding repository for the documentation type that is selected. This GitHub issue can then be picked up by someone to edit and submit a pull request to update our official documentation.
 
