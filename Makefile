@@ -76,7 +76,7 @@ endif
 golint:
 	@echo Running lint
 	env GO111MODULE=off $(GO) get golang.org/x/lint/golint
-	$(GOPATH)/bin/golint -set_exit_status ./...
+	$(GOPATH)/bin/golint -set_exit_status ./server/...
 	@echo lint success
 
 ## Builds the server, if it exists, including support for multiple architectures.
