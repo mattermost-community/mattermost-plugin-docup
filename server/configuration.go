@@ -22,6 +22,7 @@ type configuration struct {
 	AdminRepository     string
 	DeveloperRepository string
 	HandbookRepository  string
+	PluginRepositoryOrg string
 	Labels              string
 }
 
@@ -44,6 +45,9 @@ func (c *configuration) IsValid() error {
 	}
 	if c.HandbookRepository == "" {
 		return errors.New("HandbookRepository not configured")
+	}
+	if c.PluginRepositoryOrg == "" {
+		return errors.New("PluginRepositoryOrg not configured")
 	}
 	return nil
 }

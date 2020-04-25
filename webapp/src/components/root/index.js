@@ -1,7 +1,7 @@
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
-import {closeRootModal, create} from 'actions';
+import {closeRootModal, create, fetchPluginRepos} from 'actions';
 import {isRootModalVisible, getMessage, getPostID} from 'selectors';
 
 import Root from './root';
@@ -15,6 +15,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => bindActionCreators({
     close: closeRootModal,
     submit: create,
+    fetchPluginRepos,
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Root);

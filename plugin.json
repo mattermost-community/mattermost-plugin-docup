@@ -46,6 +46,13 @@
                 "help_text": "Repository for company handbook documentation."
             },
             {
+                "key": "PluginRepositoryOrg",
+                "display_name": "Plugin Repository Org",
+                "type": "text",
+                "placeholder": "mattermost",
+                "help_text": "Organization that owns the plugin repositories."
+            },
+            {
                 "key": "Labels",
                 "display_name": "Labels to Add",
                 "type": "text",

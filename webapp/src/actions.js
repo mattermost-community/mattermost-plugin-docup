@@ -32,7 +32,7 @@ export const getPluginServerRoute = (state) => {
     return basePath + '/plugins/' + pluginId;
 };
 
-export const create = (type, title, body, postID) => async (dispatch, getState) => {
+export const create = (type, title, body, repoName, postID) => async (dispatch, getState) => {
     fetch(getPluginServerRoute(getState()) + '/create', {
         method: 'POST',
         credentials: 'same-origin',
@@ -40,6 +40,17 @@ export const create = (type, title, body, postID) => async (dispatch, getState) 
             'Content-Type': 'application/json',
             'X-Requested-With': 'XMLHttpRequest',
         },
-        body: JSON.stringify({type, title, body, post_id: postID}),
+        body: JSON.stringify({type, title, body, repo_name: repoName, post_id: postID}),
     });
+};
+
+export const fetchPluginRepos = () => async (dispatch, getState) => {
+    return fetch(getPluginServerRoute(getState()) + '/list-plugin-repos', {
+        method: 'GET',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+    }).then(r => r.json());
 };

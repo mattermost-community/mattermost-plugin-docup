@@ -15,6 +15,7 @@ export default class Root extends React.Component {
         close: PropTypes.func.isRequired,
         submit: PropTypes.func.isRequired,
         theme: PropTypes.object.isRequired,
+        fetchPluginRepos: PropTypes.func.isRequired,
     }
     constructor(props) {
         super(props);
@@ -23,7 +24,13 @@ export default class Root extends React.Component {
             type: null,
             message: null,
             title: '',
+            pluginRepos: [],
+            selectedPluginRepo: null,
         };
+    }
+
+    componentDidMount() {
+        this.fetchPluginRepos()
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -31,15 +38,20 @@ export default class Root extends React.Component {
             return {message: props.message};
         }
         if (!props.visible && state.message != null) {
-            return {message: null, title: '', type: null};
+            return {message: null, title: '', type: null, selectedPluginRepo: null};
         }
         return null;
     }
 
+    fetchPluginRepos = async () => {
+        const repos = await this.props.fetchPluginRepos()
+        this.setState({pluginRepos: repos})
+    }
+
     submit = () => {
         const {submit, close, postID} = this.props;
-        const {type, title, message} = this.state;
-        submit(type, title, message, postID);
+        const {type, title, message, selectedPluginRepo} = this.state;
+        submit(type, title, message, selectedPluginRepo, postID);
         close();
     }
 
@@ -105,6 +117,27 @@ export default class Root extends React.Component {
                                     {'Company Handbook'}
                                 </label>
                             </div>
+                            <div className='radio'>
+                                <label>
+                                    <input
+                                        id='plugin-repo'
+                                        type='radio'
+                                        checked={type === 'plugin'}
+                                        onChange={() => this.setState({type: 'plugin'})}
+                                    />
+                                    {'Plugin Repository'}
+                                </label>
+                                <select
+                                    value={this.state.selectedPluginRepo}
+                                    onChange={(e) => this.setState({selectedPluginRepo: e.target.value})}
+                                    disabled={this.state.type !== 'plugin'}
+                                >
+                                    <option value=''></option>
+                                    {this.state.pluginRepos.map((repoName) => (
+                                        <option value={repoName}>{repoName}</option>
+                                    ))}
+                                </select>
+                            </div>
                         </fieldset>
                     </div>
                     <div className='docup-item'>
@@ -136,7 +169,7 @@ export default class Root extends React.Component {
                             className={'btn btn-primary'}
                             style={!type || !title ? style.inactiveButton : style.button}
                             onClick={this.submit}
-                            disabled={!type || !title}
+                            disabled={!type || !title || (type === 'plugin' && !this.state.selectedPluginRepo)}
                         >
                             {'Mark for Documentation'}
                         </button>

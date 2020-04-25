@@ -53,16 +53,19 @@ func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Req
 	switch r.URL.Path {
 	case "/create":
 		p.handleCreate(w, r)
+	case "/list-plugin-repos":
+		p.handleListPluginRepos(w, r)
 	default:
 		http.NotFound(w, r)
 	}
 }
 
 type CreateAPIRequest struct {
-	Type   string `json:"type"`
-	Title  string `json:"title"`
-	Body   string `json:"body"`
-	PostID string `json:"post_id"`
+	Type     string `json:"type"`
+	Title    string `json:"title"`
+	Body     string `json:"body"`
+	RepoName string `json:"repo_name"`
+	PostID   string `json:"post_id"`
 }
 
 func (p *Plugin) handleCreate(w http.ResponseWriter, r *http.Request) {
@@ -91,6 +94,13 @@ func (p *Plugin) handleCreate(w http.ResponseWriter, r *http.Request) {
 		ownerAndRepo = config.DeveloperRepository
 	case "handbook":
 		ownerAndRepo = config.HandbookRepository
+	case "plugin":
+		ownerAndRepo, err = p.verifyPluginRepo(createRequest.RepoName)
+		if err != nil {
+			p.API.LogError("Could not verify plugin repo name err=" + err.Error())
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 	}
 
 	if ownerAndRepo == "" {
@@ -170,6 +180,31 @@ func (p *Plugin) handleCreate(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func (p *Plugin) handleListPluginRepos(w http.ResponseWriter, r *http.Request) {
+	repos, err := p.getPluginRepos()
+	if err != nil {
+		p.API.LogError("Error fetching GitHub repositories err=" + err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	repoNames := []string{}
+	for _, repo := range repos {
+		repoNames = append(repoNames, *repo.Name)
+	}
+	jsonData, err := json.Marshal(repoNames)
+	if err != nil {
+		p.API.LogError("Error marshaling response err=" + err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
 }
 
 func NewString(s string) *string { return &s }
