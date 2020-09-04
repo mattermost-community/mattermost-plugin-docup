@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -10,18 +9,27 @@ import (
 )
 
 func TestServeHTTP(t *testing.T) {
-	assert := assert.New(t)
-	plugin := Plugin{}
-	w := httptest.NewRecorder()
-	r := httptest.NewRequest(http.MethodGet, "/", nil)
+	t.Run("root", func(t *testing.T) {
+		plugin := Plugin{}
+		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
 
-	plugin.ServeHTTP(nil, w, r)
+		plugin.ServeHTTP(nil, w, r)
 
-	result := w.Result()
-	assert.NotNil(result)
-	bodyBytes, err := ioutil.ReadAll(result.Body)
-	assert.Nil(err)
-	bodyString := string(bodyBytes)
+		result := w.Result()
+		assert.NotNil(t, result)
+		assert.Equal(t, http.StatusNotFound, result.StatusCode)
+	})
 
-	assert.Equal("Hello, world!", bodyString)
+	t.Run("create", func(t *testing.T) {
+		plugin := Plugin{}
+		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/create", nil)
+
+		plugin.ServeHTTP(nil, w, r)
+
+		result := w.Result()
+		assert.NotNil(t, result)
+		assert.Equal(t, http.StatusUnauthorized, result.StatusCode)
+	})
 }
