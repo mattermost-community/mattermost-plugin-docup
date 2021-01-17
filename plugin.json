@@ -20,34 +20,34 @@
         "settings": [
             {
                 "key": "GitHubAPIKey",
-                "display_name": "GitHub API Key",
+                "display_name": "GitHub API Key:",
                 "type": "text",
                 "help_text": "GitHub API Key used to create issues in repositories."
             },
             {
                 "key": "AdminRepository",
-                "display_name": "Admin Repository",
+                "display_name": "Admin Repository:",
                 "type": "text",
                 "placeholder": "owner/repo",
                 "help_text": "Repository for admin documentation."
             },
             {
                 "key": "DeveloperRepository",
-                "display_name": "Developer Repository",
+                "display_name": "Developer Repository:",
                 "type": "text",
                 "placeholder": "owner/repo",
                 "help_text": "Repository for developer documentation."
             },
             {
                 "key": "HandbookRepository",
-                "display_name": "Handbook Repository",
+                "display_name": "Handbook Repository:",
                 "type": "text",
                 "placeholder": "owner/repo",
                 "help_text": "Repository for company handbook documentation."
             },
             {
                 "key": "Labels",
-                "display_name": "Labels to Add",
+                "display_name": "Labels to Add:",
                 "type": "text",
                 "placeholder": "label1,label2",
                 "help_text": "Comma separated list of labels to add to issues when they are created."
