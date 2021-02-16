@@ -31,6 +31,7 @@ type Plugin struct {
 	github *github.Client
 }
 
+// OnActivate is called by the server when a plugin starts.
 func (p *Plugin) OnActivate() error {
 	config := p.getConfiguration()
 	if err := config.IsValid(); err != nil {
@@ -58,6 +59,7 @@ func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Req
 	}
 }
 
+// CreateAPIRequest models incoming create requests.
 type CreateAPIRequest struct {
 	Type   string `json:"type"`
 	Title  string `json:"title"`
@@ -172,8 +174,8 @@ func (p *Plugin) handleCreate(w http.ResponseWriter, r *http.Request) {
 	)
 
 	issueRequest := &github.IssueRequest{
-		Title:  NewString("Request for Documentation: " + createRequest.Title),
-		Body:   NewString(body),
+		Title:  newString("Request for Documentation: " + createRequest.Title),
+		Body:   newString(body),
 		Labels: &labels,
 	}
 
@@ -199,4 +201,4 @@ func (p *Plugin) handleCreate(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func NewString(s string) *string { return &s }
+func newString(s string) *string { return &s }
