@@ -31,6 +31,7 @@ type Plugin struct {
 	github *github.Client
 }
 
+// OnActivate is called by the server when a plugin starts.
 func (p *Plugin) OnActivate() error {
 	config := p.getConfiguration()
 	if err := config.IsValid(); err != nil {
@@ -58,6 +59,7 @@ func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Req
 	}
 }
 
+// CreateAPIRequest models incoming create requests.
 type CreateAPIRequest struct {
 	Type   string `json:"type"`
 	Title  string `json:"title"`
@@ -135,7 +137,34 @@ func (p *Plugin) handleCreate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	permalink, err := url.Parse(*serverConfig.ServiceSettings.SiteURL)
-	permalink.Path = path.Join(permalink.Path, "_redirect", "pl", docPost.Id)
+	if err != nil {
+		p.API.LogError("Unable to parse site url err=" + err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	docPostChannel, appErr := p.API.GetChannel(docPost.ChannelId)
+	if appErr != nil {
+		p.API.LogError("Unable to get channel err=" + appErr.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if docPostChannel.Type == model.CHANNEL_DIRECT || docPostChannel.Type == model.CHANNEL_GROUP {
+		// Only rely on _redirect when linking to DMs and GMs
+		permalink.Path = path.Join(permalink.Path, "_redirect", "pl", docPost.Id)
+	} else {
+		var docPostTeam *model.Team
+		docPostTeam, appErr = p.API.GetTeam(docPostChannel.TeamId)
+
+		if appErr != nil {
+			p.API.LogError("Unable to get team err=" + appErr.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		permalink.Path = path.Join(permalink.Path, docPostTeam.Name, "pl", docPost.Id)
+	}
 
 	body := fmt.Sprintf("Mattermost user `%s` from %s has requested the following be documented:\n\n```\n%s\n```\n\nSee the original post [here](%s).\n\n_This issue was generated from [Mattermost](https://mattermost.com) using the [Doc Up](https://github.com/jwilander/mattermost-plugin-docup) plugin._",
 		user.Username,
@@ -145,8 +174,8 @@ func (p *Plugin) handleCreate(w http.ResponseWriter, r *http.Request) {
 	)
 
 	issueRequest := &github.IssueRequest{
-		Title:  NewString("Request for Documentation: " + createRequest.Title),
-		Body:   NewString(body),
+		Title:  newString("Request for Documentation: " + createRequest.Title),
+		Body:   newString(body),
 		Labels: &labels,
 	}
 
@@ -172,4 +201,4 @@ func (p *Plugin) handleCreate(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func NewString(s string) *string { return &s }
+func newString(s string) *string { return &s }
